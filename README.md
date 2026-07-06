@@ -106,7 +106,7 @@ For Discord embeds to work, the primary URL must be publicly reachable (e.g. a c
 | ------------------------- | ------------------------------------------------------------------------- | ------------ | ------------------------------- |
 | Add Twitter/X Session     | Store `auth_token`/`ct0` cookies from a logged-in Twitter/X account. Re-adding a username replaces its tokens. | Any status   | username, `auth_token`, `ct0` (masked) |
 | Remove Twitter/X Session  | Delete a stored session (select by username). Disabled when none stored.  | Any status   | username (select)               |
-| Configure Basic Auth      | Toggle password protection for the web UI. Enabling generates and displays credentials (kept when disabling, so re-enabling restores the same login). | Any status   | on/off toggle                   |
+| Configure Basic Auth      | Toggle password protection for the web UI. Enabling generates and displays a password for the fixed username `admin` (kept when disabling, so re-enabling restores the same login). | Any status   | on/off toggle                   |
 | Reset Basic Auth Password | Generate and display a new Basic Auth password. Hidden while Basic Auth is off. | Any status   | none                            |
 | Set Primary URL           | Choose which service URL teapot uses for generated links (RSS, embeds).   | Any status   | URL (select from own interfaces) |
 

@@ -6,6 +6,9 @@ import { sdk } from './sdk'
 export const uiPort = 8080
 export const teapotPort = 8081
 
+// Fixed Basic Auth username; only the password is generated.
+export const basicAuthUsername = 'admin'
+
 // Paths inside the container. The 'main' volume mounts at /data; the daemon is
 // pointed at these via the TEAPOT_CONF_FILE / TEAPOT_SESSIONS_FILE env vars.
 export const dataDir = '/data'

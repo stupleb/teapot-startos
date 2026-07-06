@@ -5,6 +5,7 @@ import { teapotToml } from './fileModels/teapot.toml'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import {
+  basicAuthUsername,
   configPath,
   getCaddyfile,
   sessionsPath,
@@ -42,7 +43,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   // Write the Caddyfile, bcrypt-hashing the Basic Auth password if enabled
   let auth: { username: string; hash: string } | null = null
-  if (basicAuth?.enabled && basicAuth.username && basicAuth.password) {
+  if (basicAuth?.enabled && basicAuth.password) {
     const res = await caddySub.exec([
       'caddy',
       'hash-password',
@@ -52,7 +53,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     const hash = res.stdout.toString().trim()
     if (!hash.startsWith('$2'))
       throw new Error(`caddy hash-password failed: ${res.stderr.toString()}`)
-    auth = { username: basicAuth.username, hash }
+    auth = { username: basicAuthUsername, hash }
   }
   await writeFile(`${caddySub.rootfs}/Caddyfile`, getCaddyfile(auth))
 

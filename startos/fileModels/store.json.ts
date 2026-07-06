@@ -8,9 +8,9 @@ import { sdk } from '../sdk'
  * password into the Caddyfile at startup).
  */
 
+// The username is fixed ('admin', see utils.ts); only the password is stored.
 const basicAuthShape = z.object({
   enabled: z.boolean().catch(false),
-  username: z.string().nullable().catch(null),
   password: z.string().nullable().catch(null),
 })
 

@@ -30,7 +30,7 @@ To remove an account, run **Remove Twitter/X Session**.
 
 ### 3. (Optional) Password-protect your instance
 
-teapot has no login of its own — anyone who can reach your instance can use it (and consume your session's rate limits). To lock it down, run **Configure Basic Auth** and switch it on: StartOS generates a username and password and displays them once (they stay available via **Reset Basic Auth Password**, which generates a fresh password).
+teapot has no login of its own — anyone who can reach your instance can use it (and consume your session's rate limits). To lock it down, run **Configure Basic Auth** and switch it on: StartOS generates a password for the username `admin` and displays it once (**Reset Basic Auth Password** generates and shows a fresh one anytime).
 
 Keep in mind while Basic Auth is on:
 

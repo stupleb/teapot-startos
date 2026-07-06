@@ -2,6 +2,7 @@ import { utils } from '@start9labs/start-sdk'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import { storeJson } from '../fileModels/store.json'
+import { basicAuthUsername } from '../utils'
 
 export const resetBasicAuthPassword = sdk.Action.withoutInput(
   // id
@@ -25,15 +26,12 @@ export const resetBasicAuthPassword = sdk.Action.withoutInput(
 
   // the execution function
   async ({ effects }) => {
-    const current = await storeJson.read((s) => s.basicAuth).once()
-    const username =
-      current?.username || utils.getDefaultString({ charset: 'a-z', len: 8 })
     const password = utils.getDefaultString({
       charset: 'a-z,A-Z,0-9',
       len: 22,
     })
     await storeJson.merge(effects, {
-      basicAuth: { enabled: true, username, password },
+      basicAuth: { enabled: true, password },
     })
 
     return {
@@ -49,7 +47,7 @@ export const resetBasicAuthPassword = sdk.Action.withoutInput(
             type: 'single' as const,
             name: i18n('Username'),
             description: null,
-            value: username,
+            value: basicAuthUsername,
             masked: false,
             copyable: true,
             qr: false,
