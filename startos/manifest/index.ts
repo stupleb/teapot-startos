@@ -5,7 +5,7 @@ export const manifest = setupManifest({
   id: 'teapot',
   title: 'teapot',
   license: 'AGPL-3.0',
-  packageRepo: 'https://github.com/Start9Labs/teapot-startos',
+  packageRepo: 'https://github.com/stupleb/teapot-startos',
   upstreamRepo: 'https://github.com/amaanq/teapot',
   marketingUrl: 'https://github.com/amaanq/teapot',
   donationUrl: null,
