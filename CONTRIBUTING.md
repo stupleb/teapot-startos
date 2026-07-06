@@ -27,6 +27,8 @@ The `make` step invokes `start-cli s9pk pack`, which builds the teapot image fro
 
 Pushing a tag (`v<version>_<revision>`, e.g. `v0.1.0_0`) triggers `.github/workflows/release.yml`: it builds both `.s9pk`s, signs them with the developer key (`DEV_KEY` repo secret, the contents of `~/.startos/developer.key.pem`), and creates a GitHub Release with SHA256 sums and the release notes from the manifest.
 
+CI pins **start-cli v0.4.0-beta.9** (both workflows) to match this package's SDK 1.5.3 — the latest start-cli is the SDK 2.x line, which requires a packaging workspace and cannot pack 1.5.3 packages. Remove the pin step when the package migrates to SDK 2.x.
+
 ## Updating versions
 
 Upstream is untagged — the pin is a master commit. See [`UPDATING.md`](UPDATING.md) for the full procedure:

@@ -19,6 +19,22 @@ jobs:
       - name: Setup build environment
         uses: start9labs/shared-workflows/.github/actions/setup-build-env@master
 
+      # This package is SDK 1.5.3; the setup action installs the latest
+      # start-cli (now the SDK 2.x line, which requires a packaging workspace
+      # and can't pack 1.5.3 packages). Pin the matching CLI.
+      - name: Pin start-cli v0.4.0-beta.9
+        run: |
+          DOWNLOAD_URL=$(curl -fsS \
+            -H "Authorization: token ${{ github.token }}" \
+            https://api.github.com/repos/Start9Labs/start-technologies/releases/tags/v0.4.0-beta.9 \
+            | jq -r '.assets[] | select(.name=="start-cli_'"$(uname -m)"'-linux") | .browser_download_url')
+          curl -fsSL \
+            -H "Authorization: token ${{ github.token }}" \
+            -H "Accept: application/octet-stream" \
+            "$DOWNLOAD_URL" -o /tmp/start-cli
+          sudo install -m 755 /tmp/start-cli /usr/local/bin/start-cli
+          echo "start-cli: $(start-cli --version)"
+
       - name: Install developer signing key
         run: |
           mkdir -p ~/.startos
