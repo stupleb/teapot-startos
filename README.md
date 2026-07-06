@@ -40,6 +40,9 @@
 | Architectures | x86_64, aarch64                                                        |
 | Command       | `teapot` with `TEAPOT_CONF_FILE=/data/teapot.toml` and `TEAPOT_SESSIONS_FILE=/data/sessions.jsonl` |
 | Static assets | Upstream `public/` baked into the image at `/app/public` (`staticDir`) |
+| Proxy         | Bundled Caddy (`caddy:2-alpine` image) fronts teapot on the exposed port and enforces optional Basic Auth |
+
+teapot listens internally on 8081; Caddy owns the exposed 8080 and reverse-proxies to it.
 
 Upstream is untagged and unreleased; the package version tracks upstream's Cargo version, and the exact commit is pinned in the `Dockerfile`.
 
@@ -49,7 +52,7 @@ Upstream is untagged and unreleased; the package version tracks upstream's Cargo
 
 | Volume | Mount Point | Purpose                                          |
 | ------ | ----------- | ------------------------------------------------ |
-| `main` | `/data`     | `teapot.toml` (config) and `sessions.jsonl` (Twitter/X session cookies) |
+| `main` | `/data`     | `teapot.toml` (config), `sessions.jsonl` (Twitter/X session cookies), and `store.json` (Basic Auth settings) |
 
 Both files are owned and rewritten by StartOS (file models); do not hand-edit them.
 
@@ -61,6 +64,7 @@ Both files are owned and rewritten by StartOS (file models); do not hand-edit th
 2. An empty `/data/sessions.jsonl` is created. teapot starts and serves its UI, but cannot fetch any content until a session is added.
 3. An **important task** points the user at the **Add Twitter/X Session** action.
 4. The primary URL (used for RSS links and embeds) defaults to the service's `.local` address; change it with **Set Primary URL**.
+5. A second **important task** asks the user to decide on **Basic Auth** (off by default; enabling it generates credentials).
 
 ---
 
@@ -73,6 +77,7 @@ Both files are owned and rewritten by StartOS (file models); do not hand-edit th
 | `config.hmacKey` (generated on install)                                 | —                                                       |
 | `sessions.jsonl` (via session actions)                                  | —                                                       |
 | `gifTranscoding.mode` (forced `off`)                                     | —                                                       |
+| Basic Auth (via **Configure Basic Auth**; enforced by bundled Caddy)     | —                                                       |
 
 Config changes and session changes restart the service automatically (teapot only reads both files at startup).
 
@@ -80,9 +85,9 @@ Config changes and session changes restart the service automatically (teapot onl
 
 ## Network Access and Interfaces
 
-| Interface | Port | Protocol | Purpose        |
-| --------- | ---- | -------- | -------------- |
-| Web UI    | 8080 | HTTP     | teapot web app |
+| Interface | Port | Protocol | Purpose                                        |
+| --------- | ---- | -------- | ---------------------------------------------- |
+| Web UI    | 8080 | HTTP     | teapot web app (served through the Caddy proxy) |
 
 **Access methods:**
 
@@ -101,6 +106,8 @@ For Discord embeds to work, the primary URL must be publicly reachable (e.g. a c
 | ------------------------- | ------------------------------------------------------------------------- | ------------ | ------------------------------- |
 | Add Twitter/X Session     | Store `auth_token`/`ct0` cookies from a logged-in Twitter/X account. Re-adding a username replaces its tokens. | Any status   | username, `auth_token`, `ct0` (masked) |
 | Remove Twitter/X Session  | Delete a stored session (select by username). Disabled when none stored.  | Any status   | username (select)               |
+| Configure Basic Auth      | Toggle password protection for the web UI. Enabling generates and displays credentials (kept when disabling, so re-enabling restores the same login). | Any status   | on/off toggle                   |
+| Reset Basic Auth Password | Generate and display a new Basic Auth password. Hidden while Basic Auth is off. | Any status   | none                            |
 | Set Primary URL           | Choose which service URL teapot uses for generated links (RSS, embeds).   | Any status   | URL (select from own interfaces) |
 
 ---
@@ -109,7 +116,7 @@ For Discord embeds to work, the primary URL must be publicly reachable (e.g. a c
 
 **Included in backup:**
 
-- `main` volume (config, HMAC key, and session tokens)
+- `main` volume (config, HMAC key, session tokens, and Basic Auth credentials)
 
 **Restore behavior:** Volume is fully restored before the service starts. Restored session tokens keep working unless Twitter/X has invalidated them.
 
@@ -117,9 +124,10 @@ For Discord embeds to work, the primary URL must be publicly reachable (e.g. a c
 
 ## Health Checks
 
-| Check         | Method                 | Messages                                                                        |
-| ------------- | ---------------------- | ------------------------------------------------------------------------------- |
-| Web Interface | Port listening (8080)  | Success: "The web interface is ready" / Error: "The web interface is not ready" |
+| Check         | Method                          | Messages                                                                        |
+| ------------- | ------------------------------- | ------------------------------------------------------------------------------- |
+| Web Interface | Port listening (8081, internal) | Success: "The web interface is ready" / Error: "The web interface is not ready" |
+| Caddy (internal) | Port listening (8080)        | Not displayed to the user                                                        |
 
 The health check reports ready even with zero sessions — the UI is up, but content requests will fail until a session is added.
 
@@ -139,6 +147,7 @@ None.
 4. **`cache`, `preferences`, and advanced `config` options are not yet exposed** in the StartOS UI; they are pinned to upstream defaults in `/data/teapot.toml`.
 5. **Kagi summarizer integration is not configured** (`kagiToken` empty).
 6. **Upstream is unversioned** — the package builds a pinned master commit rather than a tagged release.
+7. **Basic Auth is a StartOS addition** (upstream has no auth). While enabled it applies to everyone — RSS readers need `user:pass@host` URLs, and Discord embeds stop working (Discord's crawler cannot authenticate).
 
 ---
 
@@ -169,8 +178,12 @@ startos_managed_env_vars:
 managed_files:
   - /data/teapot.toml
   - /data/sessions.jsonl
+  - /data/store.json
+internal_topology: caddy (8080, basic auth) -> teapot (8081)
 actions:
   - add-session
   - remove-session
+  - configure-basic-auth
+  - reset-basic-auth-password
   - set-primary-url
 ```

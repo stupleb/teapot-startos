@@ -16,6 +16,10 @@ export const manifest = setupManifest({
       source: { dockerBuild: {} },
       arch: ['x86_64', 'aarch64'],
     },
+    caddy: {
+      source: { dockerTag: 'caddy:2-alpine' },
+      arch: ['x86_64', 'aarch64'],
+    },
   },
   alerts: {
     install: {

@@ -28,7 +28,18 @@ The service restarts and content loads immediately after. You can add more than 
 
 To remove an account, run **Remove Twitter/X Session**.
 
-### 3. (Optional) Set the primary URL
+### 3. (Optional) Password-protect your instance
+
+teapot has no login of its own — anyone who can reach your instance can use it (and consume your session's rate limits). To lock it down, run **Configure Basic Auth** and switch it on: StartOS generates a username and password and displays them once (they stay available via **Reset Basic Auth Password**, which generates a fresh password).
+
+Keep in mind while Basic Auth is on:
+
+- Browsers prompt for the login; RSS readers need the credentials in the URL: `https://user:password@your-address/<username>/rss`
+- Discord embeds will not work, since Discord's servers cannot log in.
+
+Turning it off later keeps your credentials, so re-enabling restores the same login.
+
+### 4. (Optional) Set the primary URL
 
 teapot embeds absolute links in RSS feeds and Discord embeds. By default these use your `.local` address, which only works on your LAN. If you access teapot over Tor or a public domain, run **Set Primary URL** and pick the address those links should use.
 

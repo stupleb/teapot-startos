@@ -1,7 +1,10 @@
 import { T, utils } from '@start9labs/start-sdk'
 import { sdk } from './sdk'
 
+// Caddy fronts teapot and owns the exposed UI port (Basic Auth enforcement);
+// teapot stays internal.
 export const uiPort = 8080
+export const teapotPort = 8081
 
 // Paths inside the container. The 'main' volume mounts at /data; the daemon is
 // pointed at these via the TEAPOT_CONF_FILE / TEAPOT_SESSIONS_FILE env vars.
@@ -45,4 +48,29 @@ export function serverFromUrl(url: string) {
     https,
     publicPort: parsed.port ? Number(parsed.port) : https ? 443 : 80,
   }
+}
+
+export function getCaddyfile(
+  basicAuth: { username: string; hash: string } | null,
+): string {
+  return `
+{
+	admin off
+	log {
+		output stdout
+		level INFO
+	}
+}
+
+:${uiPort} {
+${
+  basicAuth
+    ? `	basic_auth {
+		${basicAuth.username} ${basicAuth.hash}
+	}
+`
+    : ''
+}	reverse_proxy localhost:${teapotPort}
+}
+`.trim()
 }

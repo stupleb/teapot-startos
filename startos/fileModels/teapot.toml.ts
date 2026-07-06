@@ -1,6 +1,6 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { uiPort } from '../utils'
+import { teapotPort } from '../utils'
 
 // Model of teapot's TOML config (upstream: config/teapot.example.toml). Keys
 // are camelCase — upstream deserializes with serde rename_all = "camelCase".
@@ -11,7 +11,8 @@ import { uiPort } from '../utils'
 const serverShape = z.object({
   address: z.literal('0.0.0.0').catch('0.0.0.0'),
   hostname: z.string().catch('localhost'),
-  port: z.literal(uiPort).catch(uiPort),
+  // Internal port — the bundled Caddy proxy owns the exposed uiPort.
+  port: z.literal(teapotPort).catch(teapotPort),
   publicPort: z.number().int().optional().catch(undefined),
   https: z.boolean().catch(false),
   httpMaxConnections: z.number().int().catch(100),

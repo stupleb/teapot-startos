@@ -39,6 +39,29 @@ const dict = {
 
   // init/taskSetPrimaryUrl.ts
   'Primary URL removed. Select a new primary URL.': 24,
+
+  // main.ts (caddy)
+  'Caddy is ready': 25,
+  'Caddy is not ready': 26,
+
+  // actions/configureBasicAuth.ts
+  'Enable Basic Auth': 27,
+  'Require a username and password to access the teapot web interface. Applies to everyone, including RSS readers, and prevents Discord embeds while enabled.': 28,
+  'Configure Basic Auth': 29,
+  'Protect the teapot web interface with a generated username and password, or turn the protection off.': 30,
+  'Basic Auth disabled': 31,
+  'The web interface no longer requires a login. The service restarts to apply changes.': 32,
+  'Basic Auth enabled': 33,
+  'Use these credentials when prompted for a login. The service restarts to apply changes.': 34,
+  Password: 35,
+
+  // actions/resetBasicAuthPassword.ts
+  'Reset Basic Auth Password': 36,
+  'Generate a new random password for Basic Auth and display it. The service restarts to apply it.': 37,
+  'Basic Auth Credentials': 38,
+
+  // init/taskBasicAuth.ts
+  'Decide whether to protect the teapot web interface with a username and password (Basic Auth).': 39,
 } as const
 
 /**
