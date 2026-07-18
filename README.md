@@ -142,7 +142,7 @@ None.
 ## Limitations and Differences
 
 1. **Session tokens are mandatory for content** — teapot has no anonymous/guest mode. Without a stored session, every profile/tweet request fails.
-2. **Accounts used for scraping risk suspension** — the install alert and the Add Session action both recommend a throwaway account.
+2. **Accounts used for scraping risk suspension** — `instructions.md` and the Add Session action's warning both recommend a throwaway account. (The manifest's `alerts.install` block does _not_ reach users, and never has: the pack step drops `alerts` from the built manifest on **both** SDK lines — verified on the released `v0.1.0_0` s9pk, packed on 1.5.3, as well as on the 2.0.6 build. It is long-standing dead weight, not a 2.0 regression.)
 3. **GIF transcoding is disabled** (`gifTranscoding.mode = "off"`); the optional ffmpeg-based pipeline is not shipped in the image.
 4. **`cache`, `preferences`, and advanced `config` options are not yet exposed** in the StartOS UI; they are pinned to upstream defaults in `/data/teapot.toml`.
 5. **Kagi summarizer integration is not configured** (`kagiToken` empty).

@@ -22,7 +22,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
   await sessionsJsonl.read().const(effects)
   const basicAuth = await storeJson.read((s) => s.basicAuth).const(effects)
 
-  const teapotSub = await sdk.SubContainer.of(
+  // 2.0: SubContainer.of() is lazy and synchronous — it materializes on first
+  // use (rootfs/exec), so no await here.
+  const teapotSub = sdk.SubContainer.of(
     effects,
     { imageId: 'teapot' },
     sdk.Mounts.of().mountVolume({
@@ -34,7 +36,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     'teapot-sub',
   )
 
-  const caddySub = await sdk.SubContainer.of(
+  const caddySub = sdk.SubContainer.of(
     effects,
     { imageId: 'caddy' },
     null,
@@ -55,7 +57,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       throw new Error(`caddy hash-password failed: ${res.stderr.toString()}`)
     auth = { username: basicAuthUsername, hash }
   }
-  await writeFile(`${caddySub.rootfs}/Caddyfile`, getCaddyfile(auth))
+  await writeFile(`${await caddySub.rootfs}/Caddyfile`, getCaddyfile(auth))
 
   return sdk.Daemons.of(effects)
     .addDaemon('primary', {
