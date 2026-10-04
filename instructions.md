@@ -1,55 +1,57 @@
 # teapot
 
-teapot is a privacy-focused frontend for Twitter/X. Browse profiles and posts with no JavaScript, no tracking, and no ads — and subscribe to any user's timeline as an RSS feed.
+## Documentation
 
-teapot fetches content through the Twitter/X API using session cookies from a logged-in account. Until you add one, the web UI loads but every profile or post request will fail.
-
-> **Use a throwaway account.** Twitter/X may flag or suspend accounts whose cookies are used for scraping. Do not use an account you care about.
+- [teapot on GitHub](https://github.com/amaanq/teapot) — the upstream README: what teapot does, its routes, and how its sessions work.
 
 ## Getting set up
 
-### 1. Get your session cookies
+### 1. Copy your session cookies
 
-1. In a desktop browser, log in to <https://x.com> with the account you want teapot to use.
-2. Open the browser developer tools (usually F12) and find the cookies for `x.com`:
-   - **Firefox:** Storage tab → Cookies
-   - **Chrome/Brave:** Application tab → Cookies
-3. Copy the values of two cookies:
-   - `auth_token`
-   - `ct0`
+teapot reads Twitter/X through a logged-in account, so it needs that account's session cookies. Use an account you can afford to lose: Twitter/X may flag or suspend accounts used this way.
+
+1. In a desktop browser, log in to <https://x.com> with that account.
+2. Open the browser's developer tools (usually F12) and find the cookies for `x.com`:
+   - **Firefox:** Storage → Cookies
+   - **Chrome or Brave:** Application → Cookies
+3. Copy the values of two cookies: `auth_token` and `ct0`.
 
 ### 2. Add the session to teapot
 
-1. Open teapot's **Actions** tab in StartOS.
+1. On teapot's page in StartOS, open **Actions & Config**.
 2. Run **Add Twitter/X Session**.
 3. Enter the account's username and paste the `auth_token` and `ct0` values.
 
-The service restarts and content loads immediately after. You can add more than one account — teapot rotates between them, which spreads out rate limits. Re-adding the same username replaces its stored tokens (useful when cookies expire — log in again and repeat the steps above).
+teapot restarts and starts loading content. Until you add a session, every profile and post shows an error.
 
-To remove an account, run **Remove Twitter/X Session**.
+You can add more than one account: when one hits Twitter/X's rate limit, teapot switches to another.
 
-### 3. (Optional) Password-protect your instance
+### 3. (Optional) Put a password on it
 
-teapot has no login of its own — anyone who can reach your instance can use it (and consume your session's rate limits). To lock it down, run **Configure Basic Auth** and switch it on: StartOS generates a password for the username `admin` and displays it once (**Reset Basic Auth Password** generates and shows a fresh one anytime).
+teapot has no login of its own, so anyone who can reach it can use it and spend your accounts' rate limits. To require one, run **Configure Basic Auth** and turn it on. You'll see the username, `admin`, and a generated password.
 
-Keep in mind while Basic Auth is on:
+While it's on:
 
-- Browsers prompt for the login; RSS readers need the credentials in the URL: `https://user:password@your-address/<username>/rss`
-- Discord embeds will not work, since Discord's servers cannot log in.
+- Your browser asks for that login.
+- RSS readers need it in the feed address: `https://admin:<password>@<address>/<username>/rss`
+- Discord embeds stop working, because Discord can't log in.
 
-Turning it off later keeps your credentials, so re-enabling restores the same login.
+To see the password again, run **Configure Basic Auth** with it on. Turning it off keeps the password, so turning it back on restores the same login.
 
-### 4. (Optional) Set the primary URL
+### 4. (Optional) Choose the address used in links
 
-teapot embeds absolute links in RSS feeds and Discord embeds. By default these use your `.local` address, which only works on your LAN. If you access teapot over Tor or a public domain, run **Set Primary URL** and pick the address those links should use.
+RSS feeds and Discord embeds link back to teapot, and they all use one address. It starts as your `.local` address, which only works on your home network. If you read feeds anywhere else, or want Discord embeds, run **Set Primary URL** and pick the address the links should use. For Discord embeds it has to be a public address.
 
 ## Using teapot
 
-- **Browse:** open the **Web UI** and go to `/<username>` to view a profile.
+- **Browse:** open the **Web UI** and go to `/<username>` to see a profile.
 - **RSS:** subscribe to `/<username>/rss` in your feed reader.
-- **Discord embeds:** paste a teapot link (your primary URL must be reachable by Discord's servers, i.e. a public clearnet address).
+- **Discord embeds:** paste a teapot link into Discord.
 
 ## Troubleshooting
 
-- **Pages show errors or empty timelines:** your session cookies have likely expired or the account was restricted. Log in to x.com again, copy fresh `auth_token`/`ct0` values, and re-run **Add Twitter/X Session** with the same username.
+- **Pages show errors or empty timelines:** the account's cookies have probably expired, or Twitter/X has restricted it. Log in to x.com again, copy fresh `auth_token` and `ct0` values, and run **Add Twitter/X Session** with the same username. It replaces the old cookies.
+- **teapot is stopped and asks you to select a new primary URL:** run **Set Primary URL** and pick an address. If the one already selected is right, picking it again is fine. Then start teapot.
 - **RSS links point to the wrong address:** run **Set Primary URL**.
+- **You lost the Basic Auth password:** run **Configure Basic Auth** with it on to see it again, or **Reset Basic Auth Password** for a new one. A new password has to be updated in every RSS reader.
+- **To stop using an account:** run **Remove Twitter/X Session**.
