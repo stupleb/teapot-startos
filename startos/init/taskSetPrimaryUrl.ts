@@ -20,7 +20,10 @@ export const taskSetPrimaryUrl = sdk.setupOnInit(async (effects) => {
         { allowWriteAfterConst: true },
       )
     }
-  } else if (!availableUrls.includes(serverUrl(server))) {
+  } else if (availableUrls.includes(serverUrl(server))) {
+    await sdk.action.clearTask(effects, 'teapot:set-primary-url')
+  } else if (availableUrls.length) {
+    // an empty list means the addresses aren't known yet, not that the URL is gone
     await sdk.action.createOwnTask(effects, setPrimaryUrl, 'critical', {
       reason: i18n('Primary URL removed. Select a new primary URL.'),
     })

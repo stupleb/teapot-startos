@@ -51,7 +51,7 @@ RSS feeds and Discord embeds link back to teapot, and they all use one address. 
 ## Troubleshooting
 
 - **Pages show errors or empty timelines:** the account's cookies have probably expired, or Twitter/X has restricted it. Log in to x.com again, copy fresh `auth_token` and `ct0` values, and run **Add Twitter/X Session** with the same username. It replaces the old cookies.
-- **teapot is stopped and asks you to select a new primary URL:** run **Set Primary URL** and pick an address. If the one already selected is right, picking it again is fine. Then start teapot.
+- **teapot is stopped and asks you to select a new primary URL:** run **Set Primary URL** and pick an address, then start teapot. If the request disappears on its own first, the missing address came back: just start teapot.
 - **RSS links point to the wrong address:** run **Set Primary URL**.
 - **You lost the Basic Auth password:** run **Configure Basic Auth** with it on to see it again, or **Reset Basic Auth Password** for a new one. A new password has to be updated in every RSS reader.
 - **To stop using an account:** run **Remove Twitter/X Session**.
