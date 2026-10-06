@@ -1,13 +1,17 @@
 import { configureBasicAuth } from '../actions/configureBasicAuth'
+import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 
-// Non-blocking install reminder: the user decides on or off; task creation is
-// idempotent on its replay key, so it appears once and clears when acted on.
 export const taskBasicAuth = sdk.setupOnInit(async (effects) => {
-  await sdk.action.createOwnTask(effects, configureBasicAuth, 'important', {
-    reason: i18n(
-      'Decide whether to protect the teapot web interface with a username and password (Basic Auth).',
-    ),
-  })
+  // store.json is written only by the Basic Auth actions, so its absence means undecided
+  if (await storeJson.read().const(effects)) {
+    await sdk.action.clearTask(effects, 'teapot:configure-basic-auth')
+  } else {
+    await sdk.action.createOwnTask(effects, configureBasicAuth, 'important', {
+      reason: i18n(
+        'Decide whether to protect the teapot web interface with a username and password (Basic Auth).',
+      ),
+    })
+  }
 })

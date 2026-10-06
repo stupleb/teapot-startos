@@ -80,7 +80,7 @@ A hand edit survives, with two traps. A line that is not valid JSON is skipped, 
 
 ### `store.json`
 
-JSON, at `/data/store.json`: StartOS-side state that teapot never reads. It holds `basicAuth.enabled` and `basicAuth.password`, the password in plaintext so the actions can show it again. It does not exist until Configure Basic Auth first runs, and is written only by that action and Reset Basic Auth Password. A hand edit survives. Basic Auth is enforced only when `enabled` is `true` **and** a password is set; `enabled: true` with no password serves the web UI without a login.
+JSON, at `/data/store.json`: StartOS-side state that teapot never reads. It holds `basicAuth.enabled` and `basicAuth.password`, the password in plaintext so the actions can show it again. It does not exist until Configure Basic Auth first runs, and is written only by that action and Reset Basic Auth Password. Its existence is how init knows Basic Auth has been decided, so deleting it brings the Configure Basic Auth task back. A hand edit survives. Basic Auth is enforced only when `enabled` is `true` **and** a password is set; `enabled: true` with no password serves the web UI without a login.
 
 ### The Caddyfile
 
@@ -121,19 +121,19 @@ All five actions are user-facing, though Reset Basic Auth Password only while Ba
 - **Remove Twitter/X Session** (`remove-session`) — run to retire an account. Removes that username's line; disabled while no session is stored. Removing the last one leaves teapot unable to fetch anything, and nothing prompts the user to add another.
 - **Configure Basic Auth** (`configure-basic-auth`) — run to put a login in front of the web UI or take it off. Turning it on generates a 22-character password the first time and keeps the stored one after that, and returns it with the fixed username `admin`. Turning it off keeps the password, so turning it back on restores the same login. Running it again with Basic Auth on is how to see the current password. While on, it applies to every request: browsers prompt, RSS readers need `https://admin:<password>@<host>/<username>/rss`, and Discord embeds stop working.
 - **Reset Basic Auth Password** (`reset-basic-auth-password`) — hidden while Basic Auth is off. Run when the password has leaked or someone should lose access. Generates a new 22-character password and returns it with the username; the old one stops working at the restart, so every RSS reader holding it needs the new one. It also sets Basic Auth on, so running it from the CLI while Basic Auth is off turns it on.
-- **Set Primary URL** (`set-primary-url`) — run when links in feeds or embeds point at the wrong address, to give Discord a public URL, or to clear the critical task. Offers the service's own non-local addresses (an empty list means the interface has none yet) and writes `server.hostname`, `server.https` and `server.publicPort`. Safe to repeat; choosing the URL that is already set is how to clear a stale critical task.
+- **Set Primary URL** (`set-primary-url`) — run when links in feeds or embeds point at the wrong address, to give Discord a public URL, or when the critical task asks for it. Offers the service's own non-local addresses (an empty list means the interface has none yet) and writes `server.hostname`, `server.https` and `server.publicPort`. Safe to repeat.
 
 ## Tasks
 
-The package raises three tasks, all on teapot's own page. The critical one stops the service and holds it stopped until its action runs.
+The package raises three tasks, all on teapot's own page. Only the critical one, Set Primary URL, stops the service.
 
-| Task (action)         | Severity  | Raised                                                                                                                                   | Cleared                                       | Returns                                                       |
-| --------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------- |
-| Add Twitter/X Session | important | Once, at install                                                                                                                         | When Add Twitter/X Session runs               | No; removing every session later does not raise it again      |
-| Configure Basic Auth  | important | At every init: install, update, restore and each boot                                                                                     | When Configure Basic Auth runs, either way    | Yes, at the next init, even after the user has decided        |
-| Set Primary URL       | critical  | At any init that does not find the configured primary URL among the service's addresses: an address or domain removed, or a backup restored onto a server whose addresses differ | Only when Set Primary URL runs | Yes, whenever an init finds the URL missing again              |
+| Task (action)         | Severity  | Raised                                                                                                                                                                                            | Cleared                                                                        | Returns                                                  |
+| --------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| Add Twitter/X Session | important | Once, at install                                                                                                                                                                                  | When Add Twitter/X Session runs                                                | No; removing every session later does not raise it again |
+| Configure Basic Auth  | important | At any init while `store.json` does not exist, which is until Basic Auth has been configured                                                                                                      | When Configure Basic Auth runs, either way, and by init once `store.json` exists | Only if `store.json` is deleted                          |
+| Set Primary URL       | critical  | When the service's address list is known but does not include the configured primary URL: an address or domain removed, or a backup restored onto a server whose addresses differ. Never while the list is still empty | When Set Primary URL runs, and by init as soon as the URL is among the addresses again | Yes, whenever the URL goes missing again                 |
 
-The Set Primary URL task needs care in support. Raising it stops the service, and StartOS will not start it while the task is active. The package never clears it on its own, so if the missing address comes back, the task stays and the service stays stopped. Running Set Primary URL clears it, choosing the same URL again if that one is right; the service then still has to be started.
+The Set Primary URL task needs care in support. Raising it stops the service, and StartOS will not start it while the task is active. Clearing it, whether by the action or because the address came back, does not restart the service: it has to be started again.
 
 ## Health Checks
 
@@ -158,7 +158,7 @@ After a restore:
 - Sessions keep working as long as Twitter/X has not expired or revoked their cookies; replacing them is Add Twitter/X Session again.
 - On a different server, or one whose addresses have changed, the restored primary URL is not among the service's addresses, so the critical Set Primary URL task is raised and the service stays stopped until it runs (see [Tasks](#tasks)).
 - Basic Auth comes back as it was, with the same password.
-- The Configure Basic Auth task is raised again, as at every init.
+- The Configure Basic Auth task comes back only if the backup has no `store.json`, that is, if Basic Auth was never configured.
 
 ## Limitations and Differences
 
