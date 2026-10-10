@@ -4,7 +4,7 @@
 # from source. Pinned to a master commit — upstream is untagged (Cargo version
 # 0.1.0); bump TEAPOT_COMMIT together with the package version.
 
-ARG TEAPOT_COMMIT=636c4bfdc685f6671e673d2117ae66bae081422d
+ARG TEAPOT_COMMIT=3af2e07d0b1378b1505910855cf69c074a6ecd2e
 
 # ---- build stage ------------------------------------------------------------
 FROM rust:1-slim-bookworm AS build

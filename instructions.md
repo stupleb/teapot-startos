@@ -38,9 +38,11 @@ While it's on:
 
 To see the password again, run **Configure Basic Auth** with it on. Turning it off keeps the password, so turning it back on restores the same login.
 
-### 4. (Optional) Choose the address used in links
+The login covers teapot's HTTPS addresses. If you have marked a gateway secure, teapot's plain HTTP address on that network has no login.
 
-RSS feeds and Discord embeds link back to teapot, and they all use one address. It starts as your `.local` address, which only works on your home network. If you read feeds anywhere else, or want Discord embeds, run **Set Primary URL** and pick the address the links should use. For Discord embeds it has to be a public address.
+### 4. Choose the address used in links
+
+RSS feeds and Discord embeds link back to teapot, and they all use one address. A **Set Primary URL** task asks you to choose it, suggesting a public domain if teapot has one, otherwise your `.local` address, which only works on your home network. Links use the suggestion until you choose. If you read feeds away from home, or want Discord embeds, pick an address that works there; for Discord embeds it has to be a public one. **Open UI** opens teapot at the same address.
 
 ## Using teapot
 
@@ -51,7 +53,8 @@ RSS feeds and Discord embeds link back to teapot, and they all use one address. 
 ## Troubleshooting
 
 - **Pages show errors or empty timelines:** the account's cookies have probably expired, or Twitter/X has restricted it. Log in to x.com again, copy fresh `auth_token` and `ct0` values, and run **Add Twitter/X Session** with the same username. It replaces the old cookies.
-- **teapot is stopped and asks you to select a new primary URL:** run **Set Primary URL** and pick an address, then start teapot. If the request disappears on its own first, the missing address came back: just start teapot.
+- **teapot asks you to choose a primary URL again:** the address you chose is gone, for example a domain you removed, so links use another address for now. Run **Set Primary URL** and pick one. If the task disappears on its own, the address came back and links use it again.
 - **RSS links point to the wrong address:** run **Set Primary URL**.
+- **teapot says you're being rate limited:** teapot paces how often it fetches pages it hasn't cached, and everyone using your teapot, RSS readers included, shares that pace. Wait a minute and reload. If your feed reader keeps using it up, make it check less often.
 - **You lost the Basic Auth password:** run **Configure Basic Auth** with it on to see it again, or **Reset Basic Auth Password** for a new one. A new password has to be updated in every RSS reader.
 - **To stop using an account:** run **Remove Twitter/X Session**.

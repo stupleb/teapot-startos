@@ -6,7 +6,7 @@ import { sdk } from '../sdk'
 // upstream's wire format. JSONL is not a FileHelper built-in, so this is a
 // raw model over an array of sessions.
 
-const sessionShape = z.object({
+const sessionShape = z.looseObject({
   id: z.number().int(),
   username: z.string(),
   kind: z.literal('cookie').catch('cookie'),

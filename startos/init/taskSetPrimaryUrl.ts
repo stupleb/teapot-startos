@@ -1,31 +1,8 @@
-import { setPrimaryUrl } from '../actions/setPrimaryUrl'
-import { teapotToml } from '../fileModels/teapot.toml'
 import { i18n } from '../i18n'
-import { sdk } from '../sdk'
-import { getNonLocalUrls, serverFromUrl, serverUrl } from '../utils'
+import { primaryUrl } from '../primaryUrl'
 
-// teapot's [server] hostname/https/publicPort drive its absolute-link prefix
-// (RSS feeds, embeds). Default to the .local URL on first init; if the chosen
-// URL later disappears (e.g. a gateway is removed), prompt for a new one.
-export const taskSetPrimaryUrl = sdk.setupOnInit(async (effects) => {
-  const availableUrls = await getNonLocalUrls(effects)
-  const server = await teapotToml.read((c) => c.server).const(effects)
-
-  if (!server || server.hostname === 'localhost') {
-    const fallback = availableUrls.find((u) => u.includes('.local'))
-    if (fallback) {
-      await teapotToml.merge(
-        effects,
-        { server: serverFromUrl(fallback) },
-        { allowWriteAfterConst: true },
-      )
-    }
-  } else if (availableUrls.includes(serverUrl(server))) {
-    await sdk.action.clearTask(effects, 'teapot:set-primary-url')
-  } else if (availableUrls.length) {
-    // an empty list means the addresses aren't known yet, not that the URL is gone
-    await sdk.action.createOwnTask(effects, setPrimaryUrl, 'critical', {
-      reason: i18n('Primary URL removed. Select a new primary URL.'),
-    })
-  }
+export const taskSetPrimaryUrl = primaryUrl.setupTask('important', {
+  reason: i18n(
+    'Choose which of your teapot URLs is used when generating links, such as RSS feed URLs and Discord embeds.',
+  ),
 })
