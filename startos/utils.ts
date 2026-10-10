@@ -13,7 +13,7 @@ export const configPath = `${dataDir}/teapot.toml`
 export const sessionsPath = `${dataDir}/sessions.jsonl`
 export const sessionStatePath = `${dataDir}/session-limits.json`
 
-// teapot requires config.hmacKey to be a non-default secret of ≥32 chars (it
-// signs proxied media URLs with it). Generated once on install; never shown.
-export const newHmacKey = () =>
+// For config.hmacKey and config.debugToken, which teapot requires to be at
+// least 32 characters. Never shown.
+export const newSecret = () =>
   utils.getDefaultString({ charset: 'a-z,A-Z,0-9', len: 64 })

@@ -6,7 +6,8 @@ import { uiPort } from '../utils'
 // are camelCase — upstream deserializes with serde rename_all = "camelCase".
 // StartOS-controlled values are literals; everything else keeps upstream
 // defaults. hostname/https/publicPort are rendered from the primary URL (see
-// init/syncPrimaryUrl.ts).
+// init/syncPrimaryUrl.ts); debugToken and trustedProxies are set by
+// init/seedFiles.ts.
 
 const serverShape = z.looseObject({
   address: z.literal('0.0.0.0').catch('0.0.0.0'),
@@ -31,8 +32,10 @@ const appShape = z.looseObject({
   hmacKey: z.string().catch(''),
   base64Media: z.boolean().catch(false),
   enableRSS: z.boolean().catch(true),
-  enableDebug: z.boolean().catch(false),
+  // The Sessions health check reads /.health, which needs both.
+  enableDebug: z.literal(true).catch(true),
   debugToken: z.string().catch(''),
+  trustedProxies: z.array(z.string()).catch([]),
   proxy: z.string().catch(''),
   proxyAuth: z.string().catch(''),
   apiProxy: z.string().catch(''),
@@ -51,7 +54,7 @@ const preferencesShape = z.looseObject({
 })
 
 const gifTranscodingShape = z.looseObject({
-  mode: z.literal('off').catch('off'),
+  mode: z.enum(['off', 'local']).catch('off'),
   cacheDir: z.literal('/data/cache/gif').catch('/data/cache/gif'),
   cacheMaxMb: z.number().int().catch(512),
   externalDomain: z.string().catch(''),

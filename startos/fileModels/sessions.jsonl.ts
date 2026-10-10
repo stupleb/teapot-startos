@@ -6,15 +6,19 @@ import { sdk } from '../sdk'
 // upstream's wire format. JSONL is not a FileHelper built-in, so this is a
 // raw model over an array of sessions.
 
+// Upstream also accepts OAuth sessions (oauth_token/oauth_secret), so only the
+// fields the actions key on are declared, with upstream's defaults.
 const sessionShape = z.looseObject({
-  id: z.number().int(),
-  username: z.string(),
-  kind: z.literal('cookie').catch('cookie'),
-  auth_token: z.string(),
-  ct0: z.string(),
+  id: z.number().int().catch(0),
+  username: z.string().catch(''),
 })
 
-const shape = z.array(sessionShape).catch([])
+const shape = z.array(z.unknown()).transform((lines) =>
+  lines.flatMap((line) => {
+    const session = sessionShape.safeParse(line)
+    return session.success ? [session.data] : []
+  }),
+)
 
 export type Session = z.infer<typeof sessionShape>
 

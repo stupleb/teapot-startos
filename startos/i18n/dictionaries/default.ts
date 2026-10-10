@@ -55,6 +55,35 @@ const dict = {
 
   // init/taskBasicAuth.ts
   'Decide whether to protect the teapot web interface with a username and password (Basic Auth).': 39,
+
+  // main.ts (sessions health check)
+  'Twitter/X Sessions': 40,
+  'teapot did not report its session status': 41,
+  'No Twitter/X sessions. Run Add Twitter/X Session.': 42,
+  '${available} of ${total} sessions usable. X refused ${rejected}; replace their cookies with Add Twitter/X Session.': 43,
+  '${available} of ${total} sessions usable': 44,
+  'Every usable session is rate-limited by X. They recover within 15 minutes.': 45,
+  'X refused every session. Add fresh cookies with Add Twitter/X Session.': 46,
+
+  // actions/setPreferences.ts
+  'A hostname, followed by :port if it is not 443': 47,
+  Theme: 48,
+  'Infinite scrolling': 49,
+  'Load more posts as the page is scrolled instead of with a button. Needs JavaScript in the browser.': 50,
+  'Replace Twitter/X links': 51,
+  'Open links to Twitter/X on this other teapot or Nitter instance. Leave empty to open them on this teapot.': 52,
+  'Replace YouTube links': 53,
+  'Open YouTube links on this Invidious or Piped instance, which must serve HTTPS. Leave empty to open them on YouTube.': 54,
+  'Replace Reddit links': 55,
+  'Open Reddit links on this Redlib or Teddit instance, which must serve HTTPS. Leave empty to open them on Reddit.': 56,
+  'Set Default Preferences': 58,
+  "Choose the theme, infinite scrolling and link replacements visitors get until they change them on teapot's own Preferences page. teapot restarts to apply the change.": 59,
+
+  // actions/gifTranscoding.ts
+  'Convert GIFs for Discord': 60,
+  "X serves GIFs as MP4 videos. When this is on, teapot converts them to real GIFs for Discord embeds, so Discord plays them inline. Converting uses the server's CPU, and up to 512 MB of converted GIFs are cached.": 61,
+  'GIF Transcoding': 62,
+  'Turn GIF conversion for Discord embeds on or off. teapot restarts to apply the change.': 63,
 } as const
 
 /**

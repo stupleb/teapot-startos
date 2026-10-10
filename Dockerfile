@@ -17,6 +17,34 @@ RUN mkdir /src && tar -xzf /tmp/teapot.tar.gz -C /src --strip-components=1
 WORKDIR /src
 RUN cargo build --release --locked
 
+# ---- ffmpeg stage -----------------------------------------------------------
+# Only what upstream's src/transcode.rs runs; Debian's ffmpeg package adds ~390 MB.
+FROM debian:bookworm-slim AS ffmpeg
+
+ARG FFMPEG_VERSION=9.0.2
+ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential ca-certificates curl nasm pkg-config xz-utils zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL -o /tmp/ffmpeg.tar.xz https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz \
+    && echo "${FFMPEG_SHA256}  /tmp/ffmpeg.tar.xz" | sha256sum -c - \
+    && mkdir /ffmpeg \
+    && tar -xJf /tmp/ffmpeg.tar.xz -C /ffmpeg --strip-components=1
+
+WORKDIR /ffmpeg
+RUN ./configure \
+        --disable-everything --disable-autodetect --disable-doc --disable-network \
+        --disable-ffplay --disable-ffprobe \
+        --enable-zlib \
+        --enable-protocol=file \
+        --enable-demuxer=mov,image2 --enable-muxer=gif,image2 \
+        --enable-decoder=h264,png --enable-encoder=gif,png \
+        --enable-parser=h264,png \
+        --enable-filter=fps,scale,palettegen,paletteuse \
+    && make -j"$(nproc)" ffmpeg
+
 # ---- runtime stage ----------------------------------------------------------
 FROM debian:bookworm-slim
 
@@ -27,6 +55,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /src/target/release/teapot /usr/local/bin/teapot
+# gifTranscoding mode "local" runs it.
+COPY --from=ffmpeg /ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 # Static assets; teapot.toml points staticDir here.
 COPY --from=build /src/public /app/public
 
