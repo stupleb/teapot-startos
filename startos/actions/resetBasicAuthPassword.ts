@@ -12,13 +12,13 @@ export const resetBasicAuthPassword = sdk.Action.withoutInput(
   async ({ effects }) => ({
     name: i18n('Reset Basic Auth Password'),
     description: i18n(
-      'Generate a new random password for Basic Auth and display it. The service restarts to apply it.',
+      'Generate a new random password for Basic Auth and display it.',
     ),
     warning: null,
     allowedStatuses: 'any',
     group: null,
     visibility: (await storeJson
-      .read((s) => s.basicAuth.enabled)
+      .read((s) => s.basicAuth?.enabled)
       .const(effects))
       ? ('enabled' as const)
       : ('hidden' as const),
@@ -37,9 +37,7 @@ export const resetBasicAuthPassword = sdk.Action.withoutInput(
     return {
       version: '1' as const,
       title: i18n('Basic Auth Credentials'),
-      message: i18n(
-        'Use these credentials when prompted for a login. The service restarts to apply changes.',
-      ),
+      message: i18n('Use these credentials when prompted for a login.'),
       result: {
         type: 'group' as const,
         value: [

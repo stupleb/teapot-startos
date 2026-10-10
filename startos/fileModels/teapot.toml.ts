@@ -1,18 +1,17 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { teapotPort } from '../utils'
+import { uiPort } from '../utils'
 
 // Model of teapot's TOML config (upstream: config/teapot.example.toml). Keys
 // are camelCase — upstream deserializes with serde rename_all = "camelCase".
 // StartOS-controlled values are literals; everything else keeps upstream
-// defaults. hostname/https/publicPort are managed by the Set Primary URL
-// action (they drive teapot's absolute-link prefix for RSS and embeds).
+// defaults. hostname/https/publicPort are rendered from the primary URL (see
+// init/syncPrimaryUrl.ts).
 
-const serverShape = z.object({
+const serverShape = z.looseObject({
   address: z.literal('0.0.0.0').catch('0.0.0.0'),
   hostname: z.string().catch('localhost'),
-  // Internal port — the bundled Caddy proxy owns the exposed uiPort.
-  port: z.literal(teapotPort).catch(teapotPort),
+  port: z.literal(uiPort).catch(uiPort),
   publicPort: z.number().int().optional().catch(undefined),
   https: z.boolean().catch(false),
   httpMaxConnections: z.number().int().catch(100),
@@ -20,13 +19,13 @@ const serverShape = z.object({
   title: z.string().catch('teapot'),
 })
 
-const cacheShape = z.object({
+const cacheShape = z.looseObject({
   listMinutes: z.number().int().catch(240),
   maxEntries: z.number().int().catch(50_000),
   rssMinutes: z.number().int().catch(10),
 })
 
-const appShape = z.object({
+const appShape = z.looseObject({
   // Required by upstream: non-default secret, ≥32 chars. Generated on install
   // (see init/seedFiles.ts); teapot refuses to start while empty.
   hmacKey: z.string().catch(''),
@@ -43,7 +42,7 @@ const appShape = z.object({
   kagiTokenFile: z.string().catch(''),
 })
 
-const preferencesShape = z.object({
+const preferencesShape = z.looseObject({
   theme: z.string().catch('teapot'),
   replaceReddit: z.string().catch(''),
   replaceTwitter: z.string().catch(''),
@@ -51,14 +50,14 @@ const preferencesShape = z.object({
   infiniteScroll: z.boolean().catch(false),
 })
 
-const gifTranscodingShape = z.object({
+const gifTranscodingShape = z.looseObject({
   mode: z.literal('off').catch('off'),
   cacheDir: z.literal('/data/cache/gif').catch('/data/cache/gif'),
   cacheMaxMb: z.number().int().catch(512),
   externalDomain: z.string().catch(''),
 })
 
-const shape = z.object({
+const shape = z.looseObject({
   server: serverShape.catch(() => serverShape.parse({})),
   cache: cacheShape.catch(() => cacheShape.parse({})),
   config: appShape.catch(() => appShape.parse({})),

@@ -37,7 +37,8 @@ export const configureBasicAuth = sdk.Action.withInput(
 
   // pre-fill with the current state
   async ({ effects }) => ({
-    enabled: (await storeJson.read((s) => s.basicAuth.enabled).once()) || false,
+    enabled:
+      (await storeJson.read((s) => s.basicAuth?.enabled).once()) || false,
   }),
 
   // the execution function
@@ -48,9 +49,7 @@ export const configureBasicAuth = sdk.Action.withInput(
       return {
         version: '1' as const,
         title: i18n('Basic Auth disabled'),
-        message: i18n(
-          'The web interface no longer requires a login. The service restarts to apply changes.',
-        ),
+        message: i18n('The web interface no longer requires a login.'),
         result: null,
       }
     }
@@ -66,9 +65,7 @@ export const configureBasicAuth = sdk.Action.withInput(
     return {
       version: '1' as const,
       title: i18n('Basic Auth enabled'),
-      message: i18n(
-        'Use these credentials when prompted for a login. The service restarts to apply changes.',
-      ),
+      message: i18n('Use these credentials when prompted for a login.'),
       result: {
         type: 'group' as const,
         value: [
