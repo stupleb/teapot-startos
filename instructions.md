@@ -44,6 +44,14 @@ The login covers teapot's HTTPS addresses. If you have marked a gateway secure, 
 
 RSS feeds and Discord embeds link back to teapot, and they all use one address. A **Set Primary URL** task asks you to choose it, suggesting a public domain if teapot has one, otherwise your `.local` address, which only works on your home network. Links use the suggestion until you choose. If you read feeds away from home, or want Discord embeds, pick an address that works there; for Discord embeds it has to be a public one. **Open UI** opens teapot at the same address.
 
+### 5. (Optional) Set what visitors see
+
+Run **Set Default Preferences** to choose the theme, infinite scrolling, and where links to Twitter/X, YouTube and Reddit open, for example on your own Invidious. Visitors can still change these for themselves on teapot's **Preferences** page.
+
+### 6. (Optional) Play GIFs in Discord
+
+X sends GIFs as videos, which Discord doesn't play inline. Run **GIF Transcoding** and turn it on to have teapot convert them into real GIFs for Discord. Converting uses your server's processor, so leave it off if you don't share teapot links in Discord.
+
 ## Using teapot
 
 - **Browse:** open the **Web UI** and go to `/<username>` to see a profile.
@@ -52,9 +60,9 @@ RSS feeds and Discord embeds link back to teapot, and they all use one address. 
 
 ## Troubleshooting
 
-- **Pages show errors or empty timelines:** the account's cookies have probably expired, or Twitter/X has restricted it. Log in to x.com again, copy fresh `auth_token` and `ct0` values, and run **Add Twitter/X Session** with the same username. It replaces the old cookies.
+- **Pages show errors or empty timelines:** check the **Twitter/X Sessions** health check on teapot's page. If it says X refused a session, the account's cookies have expired or Twitter/X has restricted it: log in to x.com again, copy fresh `auth_token` and `ct0` values, and run **Add Twitter/X Session** with the same username. It replaces the old cookies. If it says the sessions are rate-limited, wait up to 15 minutes.
 - **teapot asks you to choose a primary URL again:** the address you chose is gone, for example a domain you removed, so links use another address for now. Run **Set Primary URL** and pick one. If the task disappears on its own, the address came back and links use it again.
 - **RSS links point to the wrong address:** run **Set Primary URL**.
-- **teapot says you're being rate limited:** teapot paces how often it fetches pages it hasn't cached, and everyone using your teapot, RSS readers included, shares that pace. Wait a minute and reload. If your feed reader keeps using it up, make it check less often.
+- **teapot says you're being rate limited:** teapot paces how often each device can fetch pages it hasn't cached. Wait a minute and reload. If your feed reader keeps hitting the limit, make it check less often.
 - **You lost the Basic Auth password:** run **Configure Basic Auth** with it on to see it again, or **Reset Basic Auth Password** for a new one. A new password has to be updated in every RSS reader.
 - **To stop using an account:** run **Remove Twitter/X Session**.
