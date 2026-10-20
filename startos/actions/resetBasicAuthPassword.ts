@@ -49,6 +49,7 @@ export const resetBasicAuthPassword = sdk.Action.withoutInput(
             masked: false,
             copyable: true,
             qr: false,
+            launchable: false,
           },
           {
             type: 'single' as const,
@@ -58,6 +59,7 @@ export const resetBasicAuthPassword = sdk.Action.withoutInput(
             masked: true,
             copyable: true,
             qr: false,
+            launchable: false,
           },
         ],
       },
