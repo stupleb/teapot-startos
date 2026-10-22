@@ -53,6 +53,9 @@ FROM debian:bookworm-slim
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+# Fails while the store still trusts emSign ECC Root CA - G3 (fixed in 20250419~deb12u2).
+RUN test -s /etc/ssl/certs/ca-certificates.crt \
+    && ! grep -q 'RzMwHhcNMTgwMjE4MTgzMDAwWhcNNDMwMjE4MTgzMDAwWjBrMQswCQYDVQQGEwJJ' /etc/ssl/certs/ca-certificates.crt
 
 COPY --from=build /src/target/release/teapot /usr/local/bin/teapot
 # gifTranscoding mode "local" runs it.
