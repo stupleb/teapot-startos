@@ -1,17 +1,17 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0:5',
+  version: '0.1.0:6',
   releaseNotes: {
-    en_US: "teapot uses X's current search request, so search keeps working.",
+    en_US:
+      'Stops trusting certificates from a compromised certificate authority (eMudhra).',
     es_ES:
-      'teapot usa la solicitud de búsqueda actual de X, por lo que la búsqueda sigue funcionando.',
+      'Deja de confiar en los certificados de una autoridad de certificación comprometida (eMudhra).',
     de_DE:
-      'teapot verwendet die aktuelle Suchanfrage von X, damit die Suche weiter funktioniert.',
+      'Vertraut Zertifikaten einer kompromittierten Zertifizierungsstelle (eMudhra) nicht mehr.',
     pl_PL:
-      'teapot korzysta z aktualnego zapytania wyszukiwania X, więc wyszukiwanie nadal działa.',
-    fr_FR:
-      'teapot utilise la requête de recherche actuelle de X, la recherche continue donc de fonctionner.',
+      'Przestaje ufać certyfikatom przejętego urzędu certyfikacji (eMudhra).',
+    fr_FR: `Ne fait plus confiance aux certificats d'une autorité de certification compromise (eMudhra).`,
   },
   migrations: {
     up: async ({ effects }) => {},
