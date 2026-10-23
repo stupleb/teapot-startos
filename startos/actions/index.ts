@@ -1,17 +1,15 @@
-import { primaryUrl } from '../primaryUrl'
 import { sdk } from '../sdk'
 import { addSession } from './addSession'
-import { configureBasicAuth } from './configureBasicAuth'
 import { gifTranscoding } from './gifTranscoding'
-import { removeSession } from './removeSession'
-import { resetBasicAuthPassword } from './resetBasicAuthPassword'
+import { manageAccess } from './manageAccess'
+import { removeSessions } from './removeSessions'
+import { primaryUrl } from './setPrimaryUrl'
 import { setPreferences } from './setPreferences'
 
 export const actions = sdk.Actions.of()
   .addAction(addSession)
-  .addAction(removeSession)
-  .addAction(configureBasicAuth)
-  .addAction(resetBasicAuthPassword)
+  .addAction(removeSessions)
   .addAction(primaryUrl.action)
+  .addAction(manageAccess)
   .addAction(setPreferences)
   .addAction(gifTranscoding)

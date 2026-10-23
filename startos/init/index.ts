@@ -5,20 +5,21 @@ import { versionGraph } from '../versions'
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
 import { seedFiles } from './seedFiles'
-import { syncPrimaryUrl } from './syncPrimaryUrl'
-import { taskBasicAuth } from './taskBasicAuth'
-import { taskSetPrimaryUrl } from './taskSetPrimaryUrl'
+import { taskSessions } from './taskSessions'
+import { syncPrimaryUrl, taskPrimaryUrl } from './taskPrimaryUrl'
+import { taskAccess } from './taskAccess'
 
 export const init = sdk.setupInit(
   restoreInit,
   versionGraph,
   seedFiles,
   setInterfaces,
-  dependencies,
   actions,
-  taskSetPrimaryUrl,
+  dependencies,
+  taskSessions,
+  taskPrimaryUrl,
   syncPrimaryUrl,
-  taskBasicAuth,
+  taskAccess,
 )
 
 export const uninit = sdk.setupUninit(versionGraph)

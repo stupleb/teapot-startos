@@ -11,6 +11,8 @@ import { sdk } from '../sdk'
 const sessionShape = z.looseObject({
   id: z.number().int().catch(0),
   username: z.string().catch(''),
+  auth_token: z.string().optional().catch(undefined),
+  oauth_token: z.string().optional().catch(undefined),
 })
 
 const shape = z.array(z.unknown()).transform((lines) =>

@@ -1,6 +1,6 @@
-import { storeJson } from './fileModels/store.json'
-import { i18n } from './i18n'
-import { sdk } from './sdk'
+import { storeJson } from '../fileModels/store.json'
+import { i18n } from '../i18n'
+import { sdk } from '../sdk'
 
 export const primaryUrl = sdk.setupPrimaryUrl({
   id: 'set-primary-url',

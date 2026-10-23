@@ -6,84 +6,92 @@ const dict = {
   'Web Interface': 1,
   'The web interface is ready': 2,
   'The web interface is not ready': 3,
+  'X Account Sessions': 4,
+  'teapot did not report its session status': 5,
+  'No X account sessions. Run Add X Account Session.': 6,
+  '${available} of ${total} sessions usable. X refused ${rejected}; replace their cookies with Add X Account Session.': 7,
+  '${available} of ${total} sessions usable': 8,
+  'Every usable session is rate-limited by X. They recover within 15 minutes.': 9,
+  'X refused every session. Add fresh cookies with Add X Account Session.': 10,
 
   // interfaces.ts
-  'Web UI': 4,
-  'The web interface of teapot': 5,
+  'Web UI': 11,
+  'The web interface of teapot': 12,
 
   // actions/addSession.ts
-  Username: 6,
-  'The Twitter/X username the session belongs to (without the @). Adding the same username again replaces its stored tokens.': 7,
-  'The value of the "auth_token" cookie from a logged-in Twitter/X browser session.': 8,
-  'The value of the "ct0" cookie from the same browser session.': 9,
-  'Add Twitter/X Session': 10,
-  'Add session cookies from a logged-in Twitter/X account so teapot can fetch content.': 11,
-  'Twitter/X may flag or suspend accounts used for scraping. Use a throwaway account, not one you care about.': 12,
-  'Session Added': 13,
-  'The session was saved. The service restarts to load it.': 14,
+  'Must be a hexadecimal cookie value': 13,
+  'auth_token cookie': 14,
+  'The value of the "auth_token" cookie from a logged-in x.com browser session': 15,
+  'ct0 cookie': 16,
+  'The value of the "ct0" cookie from the same x.com browser session': 17,
+  'Username (optional)': 18,
+  'The X username the session belongs to. Only used to label the session for troubleshooting.': 19,
+  'Must be a valid X username': 20,
+  'Add X Account Session': 21,
+  'Add session cookies from a logged-in X (Twitter) account. teapot needs at least one session to fetch data. Use a burner account.': 22,
+  'Session added': 23,
+  'The session was saved. teapot restarts automatically to load it if the service is running.': 24,
 
-  // actions/removeSession.ts
-  'Remove Twitter/X Session': 15,
-  'Remove a stored Twitter/X session from teapot.': 16,
-  'No sessions are stored.': 17,
-  'Session Removed': 18,
-  'The session was removed. The service restarts to apply the change.': 19,
+  // actions/removeSessions.ts
+  'Sessions to remove': 25,
+  'Sessions are labeled by username when provided, otherwise by their position in the list.': 26,
+  'Session ${number}': 27,
+  'Remove X Account Sessions': 28,
+  'Remove stored X account sessions, e.g. after revoking a session or deleting the account.': 29,
+  'teapot cannot fetch any data without at least one session.': 30,
+  'Sessions removed': 31,
+  'The selected sessions were removed.': 32,
+  'All sessions were removed. Add a new session so teapot can fetch data.': 33,
 
-  // primaryUrl.ts, init/taskSetPrimaryUrl.ts
-  URL: 20,
-  'Set Primary URL': 21,
-  'Choose which of your teapot URLs is used when generating links, such as RSS feed URLs and Discord embeds.': 22,
+  // actions/setPrimaryUrl.ts
+  'Set Primary URL': 34,
+  URL: 35,
 
-  // init/seedFiles.ts
-  'Add a Twitter/X session so teapot can fetch content from the API.': 23,
+  // init/taskPrimaryUrl.ts
+  'Choose which of your teapot URLs is used when generating links, such as RSS feed URLs and Discord embeds.': 36,
 
-  // actions/configureBasicAuth.ts
-  'Enable Basic Auth': 27,
-  'Require a username and password to access the teapot web interface. Applies to everyone, including RSS readers, and prevents Discord embeds while enabled.': 28,
-  'Configure Basic Auth': 29,
-  'Protect the teapot web interface with a generated username and password, or turn the protection off.': 30,
-  'Basic Auth disabled': 31,
-  'The web interface no longer requires a login.': 32,
-  'Basic Auth enabled': 33,
-  'Use these credentials when prompted for a login.': 34,
-  Password: 35,
+  // actions/manageAccess.ts
+  Access: 37,
+  "- Private: teapot asks for a username and password, in your browser and in RSS readers, and Discord can't show previews of teapot links\n- Public: anyone who can reach one of teapot's addresses can use it, and every page they open is fetched with your X sessions": 38,
+  'Private (require login)': 39,
+  'Generate a new password': 40,
+  'Replace the current password. The old one stops working, including in RSS readers. A password is always generated the first time teapot is made private.': 41,
+  Public: 42,
+  'Manage Access': 43,
+  'Make teapot private, so it asks for a username and password, or public. The username is always "admin".': 44,
+  'teapot is public': 45,
+  "Anyone who can reach one of teapot's addresses can use it without a login.": 46,
+  'Login required': 47,
+  'teapot asks for a username and password. Your password has not changed.': 48,
+  'Use these credentials when your browser or RSS reader asks for a login. This is the only time the password is shown.': 49,
+  Username: 50,
+  Password: 51,
 
-  // actions/resetBasicAuthPassword.ts
-  'Reset Basic Auth Password': 36,
-  'Generate a new random password for Basic Auth and display it.': 37,
-  'Basic Auth Credentials': 38,
+  // init/taskAccess.ts
+  'Choose whether teapot asks for a username and password. Private is the default.': 52,
 
-  // init/taskBasicAuth.ts
-  'Decide whether to protect the teapot web interface with a username and password (Basic Auth).': 39,
-
-  // main.ts (sessions health check)
-  'Twitter/X Sessions': 40,
-  'teapot did not report its session status': 41,
-  'No Twitter/X sessions. Run Add Twitter/X Session.': 42,
-  '${available} of ${total} sessions usable. X refused ${rejected}; replace their cookies with Add Twitter/X Session.': 43,
-  '${available} of ${total} sessions usable': 44,
-  'Every usable session is rate-limited by X. They recover within 15 minutes.': 45,
-  'X refused every session. Add fresh cookies with Add Twitter/X Session.': 46,
+  // init/taskSessions.ts
+  'teapot requires session cookies from a real X (Twitter) account to fetch data. Add a session to start the service.': 53,
 
   // actions/setPreferences.ts
-  'A hostname, followed by :port if it is not 443': 47,
-  Theme: 48,
-  'Infinite scrolling': 49,
-  'Load more posts as the page is scrolled instead of with a button. Needs JavaScript in the browser.': 50,
-  'Replace Twitter/X links': 51,
-  'Open links to Twitter/X on this other teapot or Nitter instance. Leave empty to open them on this teapot.': 52,
-  'Replace YouTube links': 53,
-  'Open YouTube links on this Invidious or Piped instance, which must serve HTTPS. Leave empty to open them on YouTube.': 54,
-  'Replace Reddit links': 55,
-  'Open Reddit links on this Redlib or Teddit instance, which must serve HTTPS. Leave empty to open them on Reddit.': 56,
-  'Set Default Preferences': 58,
-  "Choose the theme, infinite scrolling and link replacements visitors get until they change them on teapot's own Preferences page. teapot restarts to apply the change.": 59,
+  'A hostname, followed by :port if it is not 443': 54,
+  Theme: 55,
+  'Infinite scrolling': 56,
+  'Load more posts as the page is scrolled instead of with a button. Needs JavaScript in the browser.': 57,
+  'Replace Twitter/X links': 58,
+  'Open links to Twitter/X on this other teapot or Nitter instance. Leave empty to open them on this teapot.': 59,
+  'Replace YouTube links': 60,
+  'Open YouTube links on this Invidious or Piped instance, which must serve HTTPS. Leave empty to open them on YouTube.': 61,
+  'Replace Reddit links': 62,
+  'Open Reddit links on this Redlib or Teddit instance, which must serve HTTPS. Leave empty to open them on Reddit.': 63,
+  'Set Default Preferences': 64,
+  "Choose the theme, infinite scrolling and link replacements visitors get until they change them on teapot's own Preferences page. teapot restarts to apply the change.": 65,
 
   // actions/gifTranscoding.ts
-  'Convert GIFs for Discord': 60,
-  "X serves GIFs as MP4 videos. When this is on, teapot converts them to real GIFs for Discord embeds, so Discord plays them inline. Converting uses the server's CPU, and up to 512 MB of converted GIFs are cached.": 61,
-  'GIF Transcoding': 62,
-  'Turn GIF conversion for Discord embeds on or off. teapot restarts to apply the change.': 63,
+  'Convert GIFs for Discord': 66,
+  "X serves GIFs as MP4 videos. When this is on, teapot converts them to real GIFs for Discord embeds, so Discord plays them inline. Converting uses the server's CPU, and up to 512 MB of converted GIFs are cached.": 67,
+  'GIF Transcoding': 68,
+  'Turn GIF conversion for Discord embeds on or off. teapot restarts to apply the change.': 69,
 } as const
 
 /**

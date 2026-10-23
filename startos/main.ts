@@ -44,7 +44,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
     .addHealthCheck('sessions', {
       ready: {
-        display: i18n('Twitter/X Sessions'),
+        display: i18n('X Account Sessions'),
         fn: async () => {
           const health = await fetch(`http://127.0.0.1:${uiPort}/.health`, {
             headers: { Authorization: `Bearer ${toml?.config.debugToken}` },
@@ -66,7 +66,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
             return {
               result: 'failure' as const,
               message: i18n(
-                'No Twitter/X sessions. Run Add Twitter/X Session.',
+                'No X account sessions. Run Add X Account Session.',
               ),
             }
           if (available)
@@ -74,7 +74,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
               result: 'success' as const,
               message: rejected
                 ? i18n(
-                    '${available} of ${total} sessions usable. X refused ${rejected}; replace their cookies with Add Twitter/X Session.',
+                    '${available} of ${total} sessions usable. X refused ${rejected}; replace their cookies with Add X Account Session.',
                     { available, total, rejected },
                   )
                 : i18n('${available} of ${total} sessions usable', {
@@ -92,7 +92,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           return {
             result: 'failure' as const,
             message: i18n(
-              'X refused every session. Add fresh cookies with Add Twitter/X Session.',
+              'X refused every session. Add fresh cookies with Add X Account Session.',
             ),
           }
         },

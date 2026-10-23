@@ -5,3 +5,7 @@ javascript
 ncc-cache
 docker-images
 *.s9pk
+
+teapot/.git
+teapot/.github
+teapot/nix

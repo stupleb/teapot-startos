@@ -1,26 +1,25 @@
+import { primaryUrl } from './actions/setPrimaryUrl'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
-import { primaryUrl } from './primaryUrl'
 import { sdk } from './sdk'
-import { basicAuthUsername, uiPort } from './utils'
+import { uiPort, uiUsername } from './utils'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
-  const basicAuth = await storeJson.read((s) => s.basicAuth).const(effects)
+  const password = await storeJson
+    .read((s) => (s.access === 'private' ? s.password : undefined))
+    .const(effects)
 
   const uiMulti = sdk.MultiHost.of(effects, 'ui-multi')
   const uiMultiOrigin = await uiMulti.bindPort(uiPort, {
     protocol: 'http',
     addSsl: {
-      auth:
-        basicAuth?.enabled && basicAuth.password
-          ? {
-              type: 'basic',
-              credentials: [
-                { username: basicAuthUsername, password: basicAuth.password },
-              ],
-              realm: null,
-            }
-          : null,
+      auth: password
+        ? {
+            type: 'basic',
+            credentials: [{ username: uiUsername, password }],
+            realm: null,
+          }
+        : null,
     },
   })
   const ui = sdk.createInterface(effects, {
