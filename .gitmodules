@@ -1,0 +1,3 @@
+[submodule "teapot"]
+	path = teapot
+	url = https://github.com/amaanq/teapot.git

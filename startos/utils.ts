@@ -2,8 +2,7 @@ import { utils } from '@start9labs/start-sdk'
 
 export const uiPort = 8080
 
-// Fixed Basic Auth username; only the password is generated.
-export const basicAuthUsername = 'admin'
+export const uiUsername = 'admin'
 
 // Paths inside the container. The 'main' volume mounts at /data; the daemon is
 // pointed at these via the TEAPOT_CONF_FILE / TEAPOT_SESSIONS_FILE /

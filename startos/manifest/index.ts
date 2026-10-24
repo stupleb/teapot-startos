@@ -4,7 +4,7 @@ import { long, short } from './i18n'
 export const manifest = setupManifest({
   id: 'teapot',
   title: 'teapot',
-  license: 'AGPL-3.0',
+  license: 'AGPL-3.0-only',
   packageRepo: 'https://github.com/stupleb/teapot-startos',
   upstreamRepo: 'https://github.com/amaanq/teapot',
   marketingUrl: 'https://github.com/amaanq/teapot',

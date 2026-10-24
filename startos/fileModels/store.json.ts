@@ -1,14 +1,11 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-const basicAuthShape = z.looseObject({
-  enabled: z.boolean().catch(false),
-  password: z.string().nullable().catch(null),
-})
-
 const shape = z.looseObject({
-  // absent until the user decides whether to enable Basic Auth
-  basicAuth: basicAuthShape.optional().catch(undefined),
+  // unset until the owner chooses in Manage Access
+  access: z.enum(['private', 'public']).optional().catch(undefined),
+  // cleartext, because StartOS's proxy checks the login against it
+  password: z.string().optional().catch(undefined),
   primaryUrl: z.string().optional().catch(undefined),
 })
 

@@ -1,23 +1,9 @@
-# teapot for StartOS
-#
-# Upstream publishes no container image and no release binaries, so we build
-# from source. Pinned to a master commit — upstream is untagged (Cargo version
-# 0.1.0); bump TEAPOT_COMMIT together with the package version.
-
-ARG TEAPOT_COMMIT=06df4d962c204cb8a7954972b105907a6550210f
-
-# ---- build stage ------------------------------------------------------------
 FROM rust:1-slim-bookworm AS build
 
-ARG TEAPOT_COMMIT
-
-ADD https://github.com/amaanq/teapot/archive/${TEAPOT_COMMIT}.tar.gz /tmp/teapot.tar.gz
-RUN mkdir /src && tar -xzf /tmp/teapot.tar.gz -C /src --strip-components=1
-
+COPY teapot/ /src
 WORKDIR /src
 RUN cargo build --release --locked
 
-# ---- ffmpeg stage -----------------------------------------------------------
 # Only what upstream's src/transcode.rs runs; Debian's ffmpeg package adds ~390 MB.
 FROM debian:bookworm-slim AS ffmpeg
 
@@ -45,11 +31,9 @@ RUN ./configure \
         --enable-filter=fps,scale,palettegen,paletteuse \
     && make -j"$(nproc)" ffmpeg
 
-# ---- runtime stage ----------------------------------------------------------
 FROM debian:bookworm-slim
 
-# ca-certificates: teapot talks to the Twitter/X API over TLS (rustls reads the
-# system root store).
+# teapot's rustls client reads the system root store.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/*
