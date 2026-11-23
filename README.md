@@ -96,7 +96,7 @@ None. teapot depends on no other service.
 
 ## Network Access and Interfaces
 
-The service exposes one interface. StartOS's reverse proxy serves its HTTPS addresses and, while access is private, asks for the login there before a request reaches teapot.
+The service exposes one interface. StartOS's reverse proxy serves every address of it, plain HTTP and Tor included, and while access is private asks for the login there before a request reaches teapot.
 
 | Interface | ID   | Type | Port | Protocol | Serves                                                                                       |
 | --------- | ---- | ---- | ---- | -------- | -------------------------------------------------------------------------------------------- |
@@ -175,10 +175,9 @@ After a restore:
 3. **GIF transcoding starts off.** Upstream turns it on by default; here it waits for GIF Transcoding, because converting uses the server's CPU. Upstream's `external` mode, which hands conversion to a separate service, isn't offered.
 4. **Most of teapot's server settings have no StartOS UI.** Cache, Kagi translation and the rest of `config.*` stay at upstream's defaults unless `teapot.toml` is edited by hand (see [File Models](#file-models)). Set Default Preferences covers only the preferences upstream reads from its config; the rest are set per browser on teapot's Preferences page.
 5. **Upstream has no releases.** The package builds a pinned upstream commit.
-6. **Private access is a StartOS addition.** Upstream has no login. StartOS's reverse proxy asks for it on every request to the HTTPS addresses, RSS feeds included, so RSS readers need the credentials (most support Basic Auth or `user:pass@host` URLs), and Discord shows no previews, because its crawler cannot log in.
-7. **The plain-HTTP address skips the login.** It goes straight to teapot. StartOS offers it to other services on the same server and on a gateway set secure with `start-cli net gateway set-secure`. Tor is one of those services: an `.onion` address added without SSL, which is Tor's default for a web interface, serves teapot with no login even while access is private. Adding the `.onion` address with SSL on keeps the login, and Tor Browser then shows a certificate warning.
-8. **One link URL serves everyone.** Links in feeds and embeds always use it, whichever address a reader came in on, and Discord embeds need it to be publicly reachable.
-9. **Each visitor's X budget is per address.** teapot caps how fast each client can make uncached X calls, a burst of 200 and then 3 a minute, with cached pages free. It takes the visitor's address from StartOS's reverse proxy, so visitors behind one router share a budget, and so do visitors arriving over Tor. A client that uses its budget up gets teapot's rate-limit message until it refills. Setting `config.clientBudget = false` in `teapot.toml` removes the cap; X's own limits still apply.
+6. **Private access is a StartOS addition.** Upstream has no login. StartOS's reverse proxy asks for it on every request to any of teapot's addresses, RSS feeds included, so RSS readers need the credentials (most support Basic Auth or `user:pass@host` URLs), and Discord shows no previews, because its crawler cannot log in.
+7. **One link URL serves everyone.** Links in feeds and embeds always use it, whichever address a reader came in on, and Discord embeds need it to be publicly reachable.
+8. **Each visitor's X budget is per address.** teapot caps how fast each client can make uncached X calls, a burst of 200 and then 3 a minute, with cached pages free. It takes the visitor's address from StartOS's reverse proxy, so visitors behind one router share a budget, and so do visitors arriving over Tor. A client that uses its budget up gets teapot's rate-limit message until it refills. Setting `config.clientBudget = false` in `teapot.toml` removes the cap; X's own limits still apply.
 
 ---
 
